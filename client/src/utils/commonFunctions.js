@@ -19,3 +19,12 @@ export const getCookie = (name) => {
 export const deleteCookie = (name) => {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/`;
 };
+
+export function formatNumberWithSuffix(num) {
+  const suffixes = ["", "k", "M", "B", "T"];
+  const suffixIndex = Math.floor(("" + num).length / 3);
+  const formattedNumber = parseFloat(
+    (suffixIndex != 0 ? num / Math.pow(1000, suffixIndex) : num).toFixed(2)
+  );
+  return formattedNumber + suffixes[suffixIndex];
+}

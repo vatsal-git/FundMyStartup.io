@@ -7,26 +7,8 @@ const theme = createTheme({
       contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "rgba(0, 0, 0, 0)",
+      main: "rgba(0, 0, 0, 0.5)",
       contrastText: "#000000",
-    },
-  },
-  overrides: {
-    MuiButton: {
-      containedPrimary: {
-        backgroundColor: "#000000",
-        color: "#FFFFFF",
-        "&:hover": {
-          backgroundColor: "#333333",
-        },
-      },
-      containedSecondary: {
-        backgroundColor: "transparent",
-        color: "#000000",
-        "&:hover": {
-          backgroundColor: "#EEEEEE",
-        },
-      },
     },
   },
 });

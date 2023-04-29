@@ -28,7 +28,7 @@ const App = () => {
         }
       });
     }
-  }, [dispatch, getUserMutation]);
+  }, []);
 
   return (
     <Router>

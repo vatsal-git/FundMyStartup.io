@@ -73,7 +73,7 @@ const Signin = () => {
             fullWidth
             variant="contained"
             loading={isLoading}
-            className="primaryBtn"
+            className={isLoading ? "" : "primaryBtn"}
             sx={{ mt: 3, mb: 2 }}
           >
             <span>Sign-In</span>

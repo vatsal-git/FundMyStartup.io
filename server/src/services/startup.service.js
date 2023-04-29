@@ -1,30 +1,69 @@
 const Startup = require("../models/startup.model");
+const User = require("../models/user.model");
 
 const createStartup = async (req, res) => {
+  const {
+    name,
+    description,
+    location,
+    industry,
+    foundedOn,
+    founders,
+    teamSize,
+    featuredImage,
+    tags,
+    website,
+    funding,
+    investors,
+    galleryImages,
+    createdBy,
+  } = req.body;
+
   try {
-    const startup = new Startup({
-      name: req.body.name,
-      description: req.body.description,
-      user: req.user._id, // Set the user ID to the current user
-      status: req.body.status || "open",
-      createdBy: req.user.userId,
+    const newStartup = new Startup({
+      name,
+      description,
+      createdBy,
+      status: "open", //default status
+      location,
+      industry,
+      foundedOn,
+      founders,
+      teamSize,
+      featuredImage,
+      tags,
+      website,
+      funding,
+      investors,
+      galleryImages,
     });
 
-    const savedStartup = await startup.save();
-
-    res.status(201).json(savedStartup);
+    const savedStartup = await newStartup.save();
+    res
+      .status(201)
+      .json({ success: true, message: "Startup created successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error creating startup" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error: " + error.message });
   }
 };
 
 const getAllStartups = async (req, res) => {
   try {
     const startups = await Startup.find().exec();
-
-    res.status(200).json(startups);
+    //get name from User table using createdBy(id) and add to startups
+    const startupsWithUser = await Promise.all(
+      startups.map(async (startup) => {
+        const user = await User.findById(startup.createdBy).exec();
+        return { ...startup._doc, createdBy: user.name };
+      })
+    );
+    res.status(200).json({ success: true, startups: startupsWithUser });
   } catch (error) {
-    res.status(500).json({ message: "Error getting startups" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error: " + error.message });
   }
 };
 

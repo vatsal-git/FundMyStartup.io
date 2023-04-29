@@ -52,7 +52,7 @@ const SignupPage = () => {
           }}
         >
           <Typography component="h1" variant="h5">
-            Sign-In
+            Sign-Up
           </Typography>
           <Box
             component="form"

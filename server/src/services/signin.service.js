@@ -29,7 +29,7 @@ const signin = async (req, res) => {
       }
     );
 
-    return res.status(200).json({ success: true, token });
+    return res.status(200).json({ success: true, token, user });
   } catch (error) {
     console.error(error);
     return res.status(500).json({

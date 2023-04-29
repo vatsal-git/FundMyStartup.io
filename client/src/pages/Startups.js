@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import { useGetAllStartupsQuery } from "../store/apis/startup.api";
+import React, { useEffect, useState } from "react";
+import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import { useGetAllStartupsMutation } from "../store/apis/startup.api";
 import StartupCard from "../components/molecules/StartupCard";
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,13 +14,21 @@ const StartupPage = () => {
   const { user } = useSelector(userSelector);
   const [openCreateStartupModal, setOpenCreateStartupModal] = useState(false);
 
-  const { data, isLoading, isError, error } = useGetAllStartupsQuery();
+  const [getAllStartups, { data, isLoading, isError, error }] =
+    useGetAllStartupsMutation();
+
+  useEffect(() => {
+    getAllStartups();
+  }, []);
+
+  console.log({ data });
 
   const handleOpenCreateStartupModal = () => {
     setOpenCreateStartupModal(true);
   };
-  const handleCloseCreateStartupModal = () => {
+  const handleCloseCreateStartupModal = ({ fetchNewData }) => {
     setOpenCreateStartupModal(false);
+    if (fetchNewData) getAllStartups();
   };
 
   return (
@@ -62,23 +70,15 @@ const StartupPage = () => {
           <CircularProgress />
         </div>
       )}
-      {isError && (
-        <div style={{ padding: "4em 0" }}>
-          <Typography variant="h5" color="error">
-            {error.data.message}
-          </Typography>
-        </div>
+      {isError && <Typography color="error">{error.data.message}</Typography>}
+      {!isLoading && !isError && (!data || !data.startups.length) && (
+        <Typography color="textSecondary">
+          No startups found. Be the first one to create a startup!
+        </Typography>
       )}
-      {!isLoading && (!data || !data.length) && (
-        <div>
-          <Typography color="textSecondary">
-            No startups found. Be the first one to create a startup!
-          </Typography>
-        </div>
-      )}
-      {!isLoading && !isError && data && data.length && (
+      {!isLoading && !isError && data && !!data.startups.length && (
         <Grid container spacing={3}>
-          {data.map((startup) => (
+          {data.startups.map((startup) => (
             <Grid item xs={12} sm={6} md={4} key={startup._id}>
               <StartupCard startup={startup} />
             </Grid>
