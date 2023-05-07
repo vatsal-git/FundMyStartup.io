@@ -1,0 +1,13 @@
+.messagesSidebarElement {
+    padding: 1em 1em;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    white-space: nowrap;
+}
+
+.messageSidebarElement-latestMessage {
+    width: 10em;
+}

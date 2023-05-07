@@ -11,20 +11,20 @@ const createStartup = async (req, res) => {
     founders,
     teamSize,
     featuredImage,
+    status,
     tags,
     website,
     funding,
     investors,
     galleryImages,
-    createdBy,
   } = req.body;
 
   try {
     const newStartup = new Startup({
       name,
       description,
-      createdBy,
-      status: "open", //default status
+      createdBy: req.user._id,
+      status: status ?? "OPEN", //default status
       location,
       industry,
       foundedOn,
@@ -39,95 +39,96 @@ const createStartup = async (req, res) => {
     });
 
     const savedStartup = await newStartup.save();
-    res
-      .status(201)
-      .json({ success: true, message: "Startup created successfully" });
+    res.status(201).json({
+      success: true,
+      message: "Startup created successfully",
+      savedStartup,
+    });
   } catch (error) {
     res
       .status(500)
-      .json({ success: false, message: "Error: " + error.message });
+      .json({
+        success: false,
+        message: "Internal server error. Error: " + error,
+      });
   }
 };
 
 const getAllStartups = async (req, res) => {
   try {
     const startups = await Startup.find().exec();
-    //get name from User table using createdBy(id) and add to startups
     const startupsWithUser = await Promise.all(
       startups.map(async (startup) => {
         const user = await User.findById(startup.createdBy).exec();
-        return { ...startup._doc, createdBy: user.name };
+        return { ...startup._doc, createdBy: user };
       })
     );
     res.status(200).json({ success: true, startups: startupsWithUser });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Error: " + error.message });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-const getStartup = async (req, res) => {
+const getAllStartupsCreatedBy = async (req, res) => {
+  const { userId } = req.params;
   try {
-    const startup = await Startup.findById(req.params.id);
-
-    if (!startup) {
-      return res.status(404).json({ message: "Startup not found" });
-    }
-
-    res.status(200).json(startup);
+    const startups = await Startup.find({ createdBy: userId }).exec();
+    const startupsWithUser = await Promise.all(
+      startups.map(async (startup) => {
+        const user = await User.findById(startup.createdBy).exec();
+        return { ...startup._doc, createdBy: user };
+      })
+    );
+    res.status(200).json({ success: true, startups: startupsWithUser });
   } catch (error) {
-    res.status(500).json({ message: "Error getting startup" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
 const updateStartup = async (req, res) => {
   try {
     const startup = await Startup.findById(req.params.id);
-
     if (!startup) {
-      return res.status(404).json({ message: "Startup not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Startup not found" });
     }
-
-    if (startup.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
-
-    startup.name = req.body.name;
-    startup.description = req.body.description;
-
-    const savedStartup = await startup.save();
-
-    res.status(200).json(savedStartup);
+    const { updatedBy, ...updatedData } = req.body;
+    Object.keys(updatedData).forEach((key) => {
+      startup[key] = updatedData[key];
+    });
+    startup.updatedBy = updatedBy;
+    const updateStartup = await startup.save();
+    res.status(200).json({ success: true, updateStartup });
   } catch (error) {
-    res.status(500).json({ message: "Error updating startup" });
+    res.status(500).json({ success: false, message: "Server error occurred" });
   }
 };
 
 const deleteStartup = async (req, res) => {
   try {
     const startup = await Startup.findById(req.params.id);
-
     if (!startup) {
-      return res.status(404).json({ message: "Startup not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Startup not found" });
     }
-
-    if (startup.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
-
-    await startup.remove();
-
-    res.status(204).send();
+    await startup.deleteOne();
+    res
+      .status(204)
+      .json({ success: true, message: "Deleted startup successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting startup" });
+    res.status(500).json({
+      success: false,
+      message: "Server error occurred",
+    });
   }
 };
 
 module.exports = {
   createStartup,
   getAllStartups,
-  getStartup,
+  getAllStartupsCreatedBy,
   updateStartup,
   deleteStartup,
 };

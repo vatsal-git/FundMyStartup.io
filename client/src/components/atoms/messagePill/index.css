@@ -1,0 +1,15 @@
+.messagePill-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.messagePill {
+    padding: 0.5em;
+    border-radius: 0.5em;
+    width: fit-content;
+    max-width: 50%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    word-wrap: break-word;
+}

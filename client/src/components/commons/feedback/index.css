@@ -1,0 +1,17 @@
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.noData-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

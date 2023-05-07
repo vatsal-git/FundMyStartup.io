@@ -8,8 +8,14 @@ export const extendedApi = createApiInstance.injectEndpoints({
         method: "GET",
       }),
     }),
+    getUserById: builder.mutation({
+      query: (id) => ({
+        url: "/user/" + id,
+        method: "GET",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetUserMutation } = extendedApi;
+export const { useGetUserMutation, useGetUserByIdMutation } = extendedApi;

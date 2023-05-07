@@ -1,0 +1,121 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-container-hero-section {
+    display: flex;
+    align-items: center;
+    height: 80vh;
+    padding: 4em;
+}
+
+.home-container-section-hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 50%;
+    gap: 2em;
+}
+
+.home-container-section-hero-text h1 {
+    font-size: 3em;
+}
+
+.home-container-section-hero-text h2 {
+    font-size: 2em;
+}
+
+.home-container-section-hero-text p {
+    width: 80%;
+}
+
+.home-container-section-hero-btn-container {
+    display: flex;
+    gap: 1em;
+}
+
+.home-container-section-hero-image {
+    width: 50%;
+    padding: 4em;
+}
+
+.home-container-info-section {
+    padding: 4em;
+}
+
+.home-container-info-section-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.home-container-info-section h2 {
+    font-size: 2em;
+}
+
+.home-container-info-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2em;
+    padding: 2em 0;
+}
+
+.home-container-info-card {
+    width: 20em;
+    border-radius: .5em;
+    padding: 4em 2em;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1em;
+    box-shadow:
+        0px 1.7px 5.3px rgba(0, 0, 0, 0.02),
+        0px 5.6px 17.9px rgba(0, 0, 0, 0.03),
+        0px 25px 80px rgba(0, 0, 0, 0.05);
+}
+
+.home-container-info-card h5 {
+    font-size: 1.5em;
+}
+
+@media screen and (max-width: 768px) {
+
+    .home-container-hero-section,
+    .home-container-info-section {
+        flex-direction: column;
+        height: auto;
+        padding: 8em 2em;
+    }
+
+    .home-container-section-hero-text,
+    .home-container-info-section-text {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+    }
+
+    .home-container-section-hero-text h1 {
+        font-size: 2em;
+    }
+
+    .home-container-section-hero-text p {
+        width: 100%;
+    }
+
+    .home-container-section-hero-image {
+        display: none;
+    }
+
+    .home-container-info-cards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 2em;
+    }
+
+    .home-container-info-card {
+        width: 100%;
+    }
+}

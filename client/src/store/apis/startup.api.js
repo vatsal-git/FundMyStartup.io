@@ -15,9 +15,33 @@ export const extendedApi = createApiInstance.injectEndpoints({
         method: "GET",
       }),
     }),
+    getAllStartupsCreatedBy: builder.mutation({
+      query: (userId) => ({
+        url: "/startups/" + userId,
+        method: "GET",
+      }),
+    }),
+    deleteStartup: builder.mutation({
+      query: (id) => ({
+        url: "/startup/" + id,
+        method: "DELETE",
+      }),
+    }),
+    updateStartup: builder.mutation({
+      query: ({ id, payload }) => ({
+        url: "/startup/" + id,
+        method: "PUT",
+        body: payload,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useCreateStartupMutation, useGetAllStartupsMutation } =
-  extendedApi;
+export const {
+  useCreateStartupMutation,
+  useGetAllStartupsMutation,
+  useGetAllStartupsCreatedByMutation,
+  useDeleteStartupMutation,
+  useUpdateStartupMutation,
+} = extendedApi;

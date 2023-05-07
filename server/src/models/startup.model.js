@@ -5,7 +5,11 @@ const startupSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      // required: true,
+      required: true,
+    },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     name: {
       type: String,
@@ -17,8 +21,8 @@ const startupSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["open", "close"],
-      // default: "open",
+      enum: ["OPEN", "CLOSED"],
+      default: "OPEN",
       required: true,
     },
     location: {
@@ -67,6 +71,4 @@ const startupSchema = new mongoose.Schema(
   }
 );
 
-const Startup = mongoose.model("Startup", startupSchema);
-
-module.exports = Startup;
+module.exports = mongoose.model("Startup", startupSchema);

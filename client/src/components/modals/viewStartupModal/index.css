@@ -1,0 +1,25 @@
+.view-startup-modal-titleBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.view-startup-modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.view-startup-modal-content-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5em;
+}
+
+.view-startup-modal-content-gallery {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}

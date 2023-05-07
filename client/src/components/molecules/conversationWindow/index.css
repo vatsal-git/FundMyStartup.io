@@ -1,0 +1,38 @@
+.conversationWindow-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.conversationWindow-container-titleBar {
+    width: 100%;
+    padding: 1em;
+    text-align: center;
+    box-shadow:
+        0px 1.7px 5.3px rgba(0, 0, 0, 0.02),
+        0px 5.6px 17.9px rgba(0, 0, 0, 0.03),
+        0px 25px 80px rgba(0, 0, 0, 0.05);
+    ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.conversationWindow-container-messages {
+    padding: 1em;
+    height: calc(100% - 66px - 6em);
+    overflow-y: scroll;
+}
+
+.conversationWindow-container-messages-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.conversationWindow-input {
+    display: flex;
+    gap: 1em;
+    padding: 0 1.3em;
+    padding-top: 1.3em;
+    width: 100%;
+}
