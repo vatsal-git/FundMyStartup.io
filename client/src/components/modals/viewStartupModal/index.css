@@ -15,11 +15,3 @@
     gap: 0.5rem;
     margin-top: 0.5em;
 }
-
-.view-startup-modal-content-gallery {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-    flex-wrap: wrap;
-}

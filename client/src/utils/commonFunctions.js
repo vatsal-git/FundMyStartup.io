@@ -1,23 +1,26 @@
-export const setCookie = (name, value, expirationDays = 7) => {
+import { removeUser } from "../store/user";
+import { routeList } from "./routes";
+
+export const setCookie = (key, value, expirationDays = 7) => {
   const date = new Date();
   date.setTime(date.getTime() + expirationDays * 24 * 60 * 60 * 1000);
   const expires = `expires=${date.toUTCString()}`;
-  document.cookie = `${name}=${value};${expires};path=/`;
+  document.cookie = `${key}=${value};${expires};path=/`;
 };
 
-export const getCookie = (name) => {
+export const getCookie = (key) => {
   const cookies = document.cookie.split(";");
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();
-    if (cookie.startsWith(`${name}=`)) {
-      return cookie.substring(name.length + 1);
+    if (cookie.startsWith(`${key}=`)) {
+      return cookie.substring(key.length + 1);
     }
   }
   return null; // Cookie not found
 };
 
-export const deleteCookie = (name) => {
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/`;
+export const deleteCookie = (key) => {
+  document.cookie = `${key}=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/`;
 };
 
 export const formatNumberWithSuffix = (num) => {
@@ -29,9 +32,10 @@ export const formatNumberWithSuffix = (num) => {
   return formattedNumber + suffixes[suffixIndex];
 };
 
-export const a11yProps = (index) => {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
+export const handleLogout = (dispatch) => {
+  dispatch(removeUser());
+  const openRouts = routeList.map((route) => !route.authReq && route.path);
+  if (!openRouts.includes(window.location.pathname)) {
+    window.location.href = "/";
+  }
 };

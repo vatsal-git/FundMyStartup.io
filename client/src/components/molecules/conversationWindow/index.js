@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import MessagePill from "../../atoms/messagePill";
@@ -52,21 +52,24 @@ const ConversationWindow = ({
           message="Start a conversation 🗣️"
         />
         <Box className="conversationWindow-container-messages-container">
-          {conversation?.messages?.map((message, i) => {
-            const isSender = message.sender._id === user._id;
-            const willShowDelete = showDelete === message._id;
-            return (
-              <MessagePill
-                key={i}
-                message={message.message}
-                onMouseEnter={() => setShowDelete(message._id)} //pill
-                onMouseLeave={() => setShowDelete(null)} //container
-                handleDelete={() => handleDeleteMessage(message._id)}
-                isSender={isSender}
-                willShowDelete={willShowDelete}
-              />
-            );
-          })}
+          {conversation?.messages
+            ?.slice()
+            .reverse()
+            .map((message, i) => {
+              const isSender = message.sender._id === user._id;
+              const willShowDelete = isSender && showDelete === message._id;
+              return (
+                <MessagePill
+                  key={i}
+                  message={message.message}
+                  onMouseEnter={() => setShowDelete(message._id)}
+                  onMouseLeave={() => setShowDelete(null)}
+                  handleDelete={() => handleDeleteMessage(message._id)}
+                  isSender={isSender}
+                  willShowDelete={willShowDelete}
+                />
+              );
+            })}
         </Box>
       </Box>
       <Divider />

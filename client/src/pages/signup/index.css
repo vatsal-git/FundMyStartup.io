@@ -3,6 +3,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    min-height: 100vh
 }
 
 .signup-container-box {
@@ -12,4 +13,10 @@
     justify-content: center;
     gap: 1em;
     width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    .signup-container-box {
+        width: 100%;
+    }
 }

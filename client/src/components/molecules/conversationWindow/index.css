@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 100%;
 }
 
 .conversationWindow-container-titleBar {
@@ -20,7 +21,7 @@
 
 .conversationWindow-container-messages {
     padding: 1em;
-    height: calc(100% - 66px - 6em);
+    height: calc(80vh - 66px - 6em);
     overflow-y: scroll;
 }
 
@@ -35,4 +36,18 @@
     padding: 0 1.3em;
     padding-top: 1.3em;
     width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .conversationWindow-container {
+        width: 100%;
+    }
+
+    .conversationWindow-container-titleBar {
+        width: 100%;
+    }
+
+    .conversationWindow-container-messages {
+        height: calc(80vh - 66px - 6em);
+    }
 }

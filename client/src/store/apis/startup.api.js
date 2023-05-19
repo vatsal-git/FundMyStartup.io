@@ -10,15 +10,21 @@ export const extendedApi = createApiInstance.injectEndpoints({
       }),
     }),
     getAllStartups: builder.mutation({
-      query: () => ({
+      query: (searchTerm) => ({
         url: "/startups",
         method: "GET",
+        params: {
+          searchTerm: searchTerm,
+        },
       }),
     }),
     getAllStartupsCreatedBy: builder.mutation({
-      query: (userId) => ({
-        url: "/startups/" + userId,
+      query: ({ userId, searchTerm }) => ({
+        url: `/startups/${userId}`,
         method: "GET",
+        params: {
+          searchTerm: searchTerm,
+        },
       }),
     }),
     deleteStartup: builder.mutation({

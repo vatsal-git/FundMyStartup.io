@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { HandleResponse } from "../../components/commons/feedback";
+import { Error, HandleResponse } from "../../components/commons/feedback";
 import { useSignupMutation } from "../../store/apis/signup.api";
-import { DEFAULT_SIGNUP_DATA } from "../../utils/defaults";
+import { DEFAULT_SIGNUP_DATA } from "../../utils/defaultVariables";
 
 import "./index.css";
 import {
@@ -16,11 +16,14 @@ import {
   Typography,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-const SignupPage = () => {
+const Signup = () => {
   const navigate = useNavigate();
 
   const [form, setFrom] = useState(DEFAULT_SIGNUP_DATA);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [signupMutation, signupMutationRes] = useSignupMutation();
 
@@ -37,7 +40,10 @@ const SignupPage = () => {
     <Box className="signup-container">
       <Box className="signup-container-box">
         <Typography variant="h5">Sign-Up 🔐</Typography>
-        <HandleResponse response={signupMutationRes} />
+        <Error
+          show={signupMutationRes?.isError}
+          message={signupMutationRes?.error?.data?.message}
+        />
         <Box component="form" onSubmit={handleSignup} noValidate>
           <TextField
             margin="normal"
@@ -57,11 +63,24 @@ const SignupPage = () => {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={form.password}
             onChange={(e) => setFrom({ ...form, password: e.target.value })}
+            InputProps={{
+              endAdornment: showPassword ? (
+                <VisibilityIcon
+                  onClick={() => setShowPassword(!showPassword)}
+                  sx={{ cursor: "pointer" }}
+                />
+              ) : (
+                <VisibilityOffIcon
+                  onClick={() => setShowPassword(!showPassword)}
+                  sx={{ cursor: "pointer" }}
+                />
+              ),
+            }}
           />
           <TextField
             margin="normal"
@@ -84,8 +103,8 @@ const SignupPage = () => {
               value={form.role}
               onChange={(e) => setFrom({ ...form, role: e.target.value })}
             >
-              <MenuItem value="entrepreneur">Entrepreneur</MenuItem>
-              <MenuItem value="investor">Investor</MenuItem>
+              <MenuItem value="ENTREPRENEUR">Entrepreneur</MenuItem>
+              <MenuItem value="INVESTOR">Investor</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -130,4 +149,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default Signup;

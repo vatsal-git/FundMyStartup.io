@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { removeUser, userSelector } from "../../../store/user";
+import { userSelector } from "../../../store/user";
 import SexyAvatar from "../../commons/sexyAvatar";
-import { getCookie } from "../../../utils/commonFunctions";
+import { getCookie, handleLogout } from "../../../utils/commonFunctions";
 
 import "./index.css";
 import {
@@ -23,8 +23,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useSelector(userSelector);
-  const isAuthenticated = !!getCookie("token");
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isAuth = !!getCookie("token");
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   const [scrolled, setScrolled] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -37,11 +37,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrolled]);
-
-  const handleLogout = () => {
-    dispatch(removeUser());
-    navigate("/");
-  };
 
   const isActive = (page) => {
     if (
@@ -65,6 +60,7 @@ const Navbar = () => {
           <Button
             onClick={handleMenuClick}
             className="navbar-mobile-menu-button"
+            variant="outlined"
           >
             <MenuIcon />
           </Button>
@@ -72,6 +68,7 @@ const Navbar = () => {
             <Box className="navbar-mobile-container">
               <Button
                 onClick={handleMenuClose}
+                variant="outlined"
                 className="navbar-mobile-menu-button-close"
               >
                 <CloseIcon />
@@ -92,19 +89,19 @@ const Navbar = () => {
                   >
                     Startups
                   </ListItem>
-                  {user?.role === "entrepreneur" && (
-                    <ListItem
-                      component={Link}
-                      className={`navbar-mobile-link ${isActive(
-                        "/startups/" + user._id
-                      )}`}
-                      to={"/startups/" + user._id}
-                    >
-                      My Startups
-                    </ListItem>
-                  )}
-                  {isAuthenticated ? (
+                  {isAuth ? (
                     <>
+                      {user?.role === "ENTREPRENEUR" && (
+                        <ListItem
+                          component={Link}
+                          className={`navbar-mobile-link ${isActive(
+                            "/startups/" + user._id
+                          )}`}
+                          to={"/startups/" + user._id}
+                        >
+                          My Startups
+                        </ListItem>
+                      )}
                       <ListItem
                         component={Link}
                         to="/messages"
@@ -116,14 +113,13 @@ const Navbar = () => {
                       </ListItem>
                       <ListItem
                         component={Link}
-                        onClick={handleLogout}
+                        onClick={() => handleLogout(dispatch)}
                         className="navbar-mobile-link"
                       >
                         Logout
                       </ListItem>
                       <ListItem
                         component={Link}
-                        onClick={handleLogout}
                         to="/profile"
                         className="navbar-mobile-link"
                       >
@@ -177,28 +173,33 @@ const Navbar = () => {
               >
                 Startups
               </ListItem>
-              {user?.role === "entrepreneur" && (
-                <ListItem
-                  component={Link}
-                  className={`navbar-link ${isActive("/startups/" + user._id)}`}
-                  to={"/startups/" + user._id}
-                >
-                  My Startups
-                </ListItem>
-              )}
-              {isAuthenticated && (
-                <ListItem
-                  component={Link}
-                  to="/messages"
-                  className={`navbar-link ${isActive("/messages")}`}
-                >
-                  Messages
-                </ListItem>
+
+              {isAuth && (
+                <>
+                  {user?.role === "ENTREPRENEUR" && (
+                    <ListItem
+                      component={Link}
+                      className={`navbar-link ${isActive(
+                        "/startups/" + user._id
+                      )}`}
+                      to={"/startups/" + user._id}
+                    >
+                      My Startups
+                    </ListItem>
+                  )}
+                  <ListItem
+                    component={Link}
+                    to="/messages"
+                    className={`navbar-link ${isActive("/messages")}`}
+                  >
+                    Messages
+                  </ListItem>
+                </>
               )}
             </List>
           </Box>
           <Box className="navbar-actions">
-            {isAuthenticated ? (
+            {isAuth ? (
               <>
                 <Box
                   className="navbar-action-profile"
@@ -207,7 +208,7 @@ const Navbar = () => {
                   <SexyAvatar name={user?.name} avatar={user?.avatar} />
                 </Box>
                 <Button
-                  onClick={handleLogout}
+                  onClick={() => handleLogout(dispatch)}
                   variant="outlined"
                   className="navbar-action-logout"
                 >

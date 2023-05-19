@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import imageCompression from "browser-image-compression";
 
-import { Box, Button, Grid, IconButton, Paper } from "@mui/material";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import ClearIcon from "@mui/icons-material/Clear";
 import { Loader } from "../feedback";
 import ImageBox from "../imageBox";
+
+import { Box, Button, Grid, IconButton, Paper } from "@mui/material";
+import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const PreviewImage = ({ imageSrc, handleRemoveImage }) => (
   <Grid item>
@@ -26,15 +28,50 @@ const PreviewImage = ({ imageSrc, handleRemoveImage }) => (
   </Grid>
 );
 
-const ImageInputField = ({
-  required,
-  id,
-  label,
-  onChange,
-  multiple = false,
-}) => {
-  const [imagePreview, setImagePreview] = useState(null);
+const ImageInputField = ({ id, label, value, onChange, multiple = false }) => {
+  const [imagePreview, setImagePreview] = useState(value);
   const [uploading, setUploading] = useState(false);
+
+  const handleImageChange = async (event) => {
+    setUploading(true);
+    if (multiple) {
+      const files = event.target.files;
+      const promises = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        promises.push(compressImage(file));
+      }
+      const results = await Promise.all(promises);
+      if (imagePreview) {
+        setImagePreview([...imagePreview, ...results]);
+      } else {
+        setImagePreview([...results]);
+      }
+      onChange([...imagePreview, ...results]);
+    } else {
+      const file = event.target.files[0];
+      const result = await compressImage(file);
+      setImagePreview(result);
+      onChange(result);
+    }
+    setUploading(false);
+  };
+
+  const compressImage = async (file) => {
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 200,
+      useWebWorker: true,
+    };
+    try {
+      const compressedFile = await imageCompression(file, options);
+      const compressedDataUrl = await readFileAsDataURL(compressedFile);
+      return compressedDataUrl;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
 
   const readFileAsDataURL = (file) => {
     return new Promise((resolve, reject) => {
@@ -45,39 +82,12 @@ const ImageInputField = ({
     });
   };
 
-  const handleImageChange = async (event) => {
-    setUploading(true);
-    if (multiple) {
-      const files = event.target.files;
-      const promises = [];
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        promises.push(readFileAsDataURL(file));
-      }
-      const results = await Promise.all(promises);
-      if (imagePreview) setImagePreview([...imagePreview, ...results]);
-      else setImagePreview([...results]);
-      let urlFiles = [];
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        urlFiles.push(URL.createObjectURL(file));
-      }
-      onChange(urlFiles);
-    } else {
-      const file = event.target.files[0];
-      const result = await readFileAsDataURL(file);
-      setImagePreview(result);
-      const urlFile = URL.createObjectURL(file);
-      onChange(urlFile);
-    }
-    setUploading(false);
-  };
-
   const handleRemoveImage = (index) => {
     if (multiple) {
       const newImagePreview = [...imagePreview];
       newImagePreview.splice(index, 1);
       setImagePreview(newImagePreview);
+      onChange(newImagePreview);
     } else {
       setImagePreview(null);
       onChange(null);
@@ -88,7 +98,6 @@ const ImageInputField = ({
     <Box my={2}>
       <Paper variant="outlined" sx={{ p: 2, minHeight: 200 }}>
         <input
-          required={required}
           accept="image/*"
           id={id}
           name={id}
@@ -101,7 +110,7 @@ const ImageInputField = ({
           <Button
             variant="outlined"
             component="span"
-            startIcon={<PhotoCameraIcon />}
+            startIcon={<PhotoCameraOutlinedIcon />}
             endIcon={<Loader show={uploading} size={20} />}
             sx={{ width: "100%" }}
           >

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import StatusChip from "../../atoms/statusChip";
@@ -16,6 +16,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Grid,
   Typography,
 } from "@mui/material";
 
@@ -39,14 +40,14 @@ const ViewStartupModal = ({ open, handleClose, startup }) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md">
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle className="view-startup-modal-titleBar">
         <Typography variant="inherit">{startup.name}</Typography>
         <StatusChip status={startup.status} />
       </DialogTitle>
       <DialogContent dividers>
         <Box className="view-startup-modal-content">
-          <ImageBox src={startup.featuredImage} height="15em" width="100%" />
+          <ImageBox src={startup.featuredImage} height="15em" />
           <Box mt={2}>
             <Typography variant="subtitle2">🏷️Tags:</Typography>
             <ViewChips data={startup.tags} />
@@ -100,33 +101,40 @@ const ViewStartupModal = ({ open, handleClose, startup }) => {
             </Typography>
           </Box>
           <Box mt={2}>
-            <Typography variant="subtitle2" sx={{ display: "inline" }}>
+            <Typography
+              variant="subtitle2"
+              sx={{ display: "inline", mr: "0.5em" }}
+            >
               ⚙️Website:
             </Typography>
-            <Typography variant="body1" sx={{ display: "inline", ml: "0.5em" }}>
+            <Link href={startup.website} target="_blank">
               {startup.website}
-            </Typography>
+            </Link>
           </Box>
           <Box mt={2}>
             <Typography variant="subtitle2" sx={{ display: "inline" }}>
               👤Startup created by:
             </Typography>
-            <Typography variant="body1" sx={{ display: "inline", ml: "0.5em" }}>
+            <Link to={`/profile/${startup.createdBy._id}`}>
               {startup.createdBy.name}
-            </Typography>
+            </Link>
           </Box>
           <Box mt={2}>
             <Typography variant="subtitle2">🗨️Description:</Typography>
-            <Typography variant="body1">{startup.description}</Typography>
+            <Typography variant="body1" textAlign="justify">
+              {startup.description}
+            </Typography>
           </Box>
           {!!startup.galleryImages.length && (
             <Box mt={2}>
               <Typography variant="subtitle2">📸Product Gallery:</Typography>
-              <Box className="view-startup-modal-content-gallery">
+              <Grid container spacing="1em" mt={0}>
                 {startup.galleryImages.map((image, i) => (
-                  <ImageBox key={i} src={image} height="15em" width="15em" />
+                  <Grid item xs={12} sm={6} md={4} lg={4} key={i}>
+                    <ImageBox src={image} height="10em" width="100%" />
+                  </Grid>
                 ))}
-              </Box>
+              </Grid>
             </Box>
           )}
         </Box>

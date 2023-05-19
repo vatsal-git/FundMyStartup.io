@@ -1,32 +1,42 @@
 import React from "react";
 
 import "./index.css";
-import { Alert, Box, Typography, CircularProgress } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Typography,
+  CircularProgress,
+  AlertTitle,
+  Backdrop,
+} from "@mui/material";
 
-export const HandleResponse = ({ response, noDataMessage }) => {
+export const HandleResponse = ({
+  response,
+  noDataMessage,
+  backdrop,
+  ...props
+}) => {
   if (response?.isLoading) {
-    return <Loader />;
+    return <Loader {...props} backdrop={backdrop} />;
   } else if (response?.isError) {
-    return <Error message={response?.data?.message} />;
+    return <Error message={response?.error?.data?.message} {...props} />;
   } else if (
-    response?.data?.isSuccess &&
-    (!response?.data || response?.data?.length === 0)
+    response?.isSuccess &&
+    ((Array.isArray(response?.data) && response?.data?.length === 0) ||
+      !response?.data)
   ) {
-    return <NoData message={noDataMessage} />;
+    return <NoData message={noDataMessage} {...props} />;
   }
 };
 
-export const Error = ({
-  show = true,
-  message = "Error occurred",
-  width = "100%",
-  height = "100%",
-  ...props
-}) => {
+export const Error = ({ show = true, message, width = "100%", ...props }) => {
   if (show) {
     return (
-      <Box className="error-container" sx={{ width, height }} {...props}>
-        <Alert severity="error">{message}</Alert>
+      <Box className="error-container" sx={{ width }} {...props}>
+        <Alert severity="error" sx={{ width: "100%" }}>
+          <AlertTitle>Error occurred</AlertTitle>
+          {message}
+        </Alert>
       </Box>
     );
   }
@@ -34,12 +44,22 @@ export const Error = ({
 
 export const Loader = ({
   show = true,
+  backdrop,
   height = "100%",
   width = "100%",
   size,
   ...props
 }) => {
-  if (show) {
+  if (backdrop && show) {
+    return (
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={show}
+      >
+        <CircularProgress />
+      </Backdrop>
+    );
+  } else if (show) {
     return (
       <Box
         className="loader-container"
@@ -72,7 +92,7 @@ export const NoData = ({
         }}
         {...props}
       >
-        <Typography color="subtitle2" fontSize="smaller">
+        <Typography variant="subtitle2" color="GrayText" fontSize="smaller">
           {message}
         </Typography>
       </Box>

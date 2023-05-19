@@ -1,9 +1,10 @@
 import { useState } from "react";
 
+import StatusChip from "./../../atoms/statusChip";
 import ChipInputField from "../../commons/chipInputField";
 import ImageInputField from "../../commons/imageInputField";
-import { DEFAULT_STARTUP_DATA } from "../../../utils/defaults";
-import StatusChip from "./../../atoms/statusChip";
+import { Error } from "../../commons/feedback";
+import { DEFAULT_STARTUP_DATA } from "../../../utils/defaultVariables";
 
 import "./index.css";
 import {
@@ -18,7 +19,6 @@ import {
   Typography,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
-import { Error } from "../../commons/feedback";
 
 const CreateEditStartupModal = ({
   open,
@@ -54,7 +54,7 @@ const CreateEditStartupModal = ({
           </Box>
         </Box>
       </DialogTitle>
-      <Error show={!!error} message={error?.data?.message} mb="1em"/>
+      <Error show={!!error} message={error?.data?.message} mb="1em" />
       <DialogContent dividers>
         <TextField
           autoFocus
@@ -214,7 +214,7 @@ const CreateEditStartupModal = ({
           onChange={(imageFiles) => {
             setStartup((prevState) => ({
               ...prevState,
-              galleryImages: [...prevState.galleryImages, ...imageFiles],
+              galleryImages: imageFiles,
             }));
           }}
         />
@@ -229,7 +229,7 @@ const CreateEditStartupModal = ({
           loading={isLoading}
           onClick={(e) => handleSubmit(e, startup, defaultValues)}
         >
-          {defaultValues ? "Edit" : "Create"}
+          {defaultValues ? "Save" : "Create"}
         </LoadingButton>
       </DialogActions>
     </Dialog>

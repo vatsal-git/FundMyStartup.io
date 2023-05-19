@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { userSelector } from "../../store/user";
 import image1 from "../../assets/images/homepage-img-1.svg";
 import image2 from "../../assets/images/homepage-img-2.svg";
-import image3 from "../../assets/images/homepage-img-2.svg";
-//TODO : get 3rd image
+import image3 from "../../assets/images/homepage-img-3.svg";
 
 import "./index.css";
 import { Box, Button, Divider, Typography } from "@mui/material";
@@ -29,7 +28,7 @@ const Home = () => {
             <Button variant="outlined" onClick={() => navigate("/startups")}>
               Explore Startups ✈️
             </Button>
-            {user?.role === "entrepreneur" && (
+            {user?.role === "ENTREPRENEUR" && (
               <Button
                 variant="contained"
                 onClick={() => navigate("/startups/" + user?._id)}
@@ -118,7 +117,7 @@ const Home = () => {
             <Button variant="outlined" onClick={() => navigate("/startups")}>
               Explore Startups ✈️
             </Button>
-            {user?.role === "entrepreneur" && (
+            {user?.role === "ENTREPRENEUR" && (
               <Button
                 variant="contained"
                 onClick={() => navigate("/startups/" + user?._id)}

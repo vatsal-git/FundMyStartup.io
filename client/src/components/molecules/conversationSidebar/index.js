@@ -24,6 +24,7 @@ const ConversationSidebar = ({
         return (
           <React.Fragment key={conversation?.user?._id}>
             <MessagesSidebarElement
+              avatar={conversation.user.avatar}
               title={conversation.user.name}
               isActive={
                 currentConversation?.user?._id === conversation?.user?._id

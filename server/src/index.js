@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const http = require("http");
-const socketIo = require("socket.io");
+const { MONGODB_CONNECTION_STRING, CORS_OPTIONS } = require("./config");
 
 //import utils
 const { authenticateToken } = require("./utils/authenticateToken");
@@ -33,7 +33,7 @@ const {
 } = require("./services/message.service");
 
 //setup db
-mongoose.connect("mongodb://127.0.0.1:27017/fund-my-startup-db", {
+mongoose.connect(MONGODB_CONNECTION_STRING, {
   useNewUrlParser: true,
 });
 const connection = mongoose.connection;
@@ -47,7 +47,7 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(CORS_OPTIONS));
 
 //routes
 app.post("/api/signup", signup);
@@ -55,8 +55,8 @@ app.post("/api/signin", signin);
 
 app.get("/api/user", authenticateToken, getUser);
 app.get("/api/user/:id", authenticateToken, getUserById);
-app.put("/api/user/:id", authenticateToken, updateUser);
-app.delete("/api/user/:id", authenticateToken, deleteUser);
+app.put("/api/user", authenticateToken, updateUser);
+app.delete("/api/user", authenticateToken, deleteUser);
 
 app.post("/api/startup", authenticateToken, createStartup);
 app.get("/api/startups", getAllStartups);
@@ -73,10 +73,7 @@ app.listen(SERVER_PORT, () =>
 //setup socket
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
+  cors: CORS_OPTIONS,
 });
 
 //socket events

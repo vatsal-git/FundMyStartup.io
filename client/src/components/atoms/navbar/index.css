@@ -9,6 +9,7 @@
     z-index: 1;
     transition: all 0.3s ease-in-out;
     position: relative;
+    z-index: 999;
 }
 
 .navbar.scrolled {
@@ -73,6 +74,6 @@
     cursor: pointer;
 }
 
-.navbar-mobile-action-profile{
+.navbar-mobile-action-profile {
     margin-left: .5em
 }

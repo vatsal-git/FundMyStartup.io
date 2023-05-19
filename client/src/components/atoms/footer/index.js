@@ -114,7 +114,7 @@ const Footer = () => {
       <Box className="footer-copyRight">
         <Box className="footer-startupListCount">
           <Typography variant="subtitle2" color="black">
-            {startupsRes?.data?.startups?.length}
+            {startupsRes?.data?.length}
           </Typography>
           <Typography variant="subtitle1" color="GrayText">
             Startups Listed

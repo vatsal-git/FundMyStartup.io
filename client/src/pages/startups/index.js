@@ -11,10 +11,10 @@ import {
 import StartupCard from "../../components/molecules/startupCard";
 import CreateEditStartupModal from "../../components/modals/createEditStartupModal";
 import ConfirmationModal from "../../components/modals/confirmationModal";
-import { Loader, Error, NoData } from "../../components/commons/feedback";
+import { HandleResponse } from "../../components/commons/feedback";
 
 import "./index.css";
-import { Box, Grid, Typography, Button } from "@mui/material";
+import { Box, Grid, Typography, Button, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 const Startups = () => {
@@ -22,6 +22,7 @@ const Startups = () => {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [startupToDelete, setStartupToDelete] = useState(null);
   const [startupToEdit, setStartupToEdit] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [getAllStartups, startupsRes] = useGetAllStartupsMutation();
   const [getAllStartupsCreatedBy, startupsCreatedByRes] =
@@ -31,29 +32,35 @@ const Startups = () => {
   const [deleteStartup, deleteStartupRes] = useDeleteStartupMutation();
 
   useEffect(() => {
-    userId ? getAllStartupsCreatedBy(userId) : getAllStartups();
+    userId ? getAllStartupsCreatedBy({ userId }) : getAllStartups();
   }, [getAllStartups, getAllStartupsCreatedBy, userId]);
 
   useEffect(() => {
     if (createStartupRes.isSuccess) {
-      // getAllStartupsCreatedBy(userId);
+      getAllStartupsCreatedBy({ userId });
       setOpenCreateModal(false);
     }
   }, [createStartupRes.isSuccess, getAllStartupsCreatedBy, userId]);
 
   useEffect(() => {
     if (updateStartupRes.isSuccess) {
-      getAllStartupsCreatedBy(userId);
+      getAllStartupsCreatedBy({ userId });
       setStartupToEdit(null);
     }
   }, [getAllStartupsCreatedBy, updateStartupRes.isSuccess, userId]);
 
   useEffect(() => {
     if (deleteStartupRes.isSuccess) {
-      getAllStartupsCreatedBy(userId);
+      getAllStartupsCreatedBy({ userId });
       setStartupToEdit(null);
     }
   }, [deleteStartupRes.isSuccess, getAllStartupsCreatedBy, userId]);
+
+  useEffect(() => {
+    userId
+      ? getAllStartupsCreatedBy({ userId, searchTerm })
+      : getAllStartups(searchTerm);
+  }, [getAllStartups, getAllStartupsCreatedBy, userId, searchTerm]);
 
   const handleCreateSubmit = (e, startup) => {
     e.preventDefault();
@@ -79,92 +86,87 @@ const Startups = () => {
   const handleEdit = (startup) => setStartupToEdit(startup);
   const handleDelete = (startup) => setStartupToDelete(startup);
 
+  const handleSearch = (value) => setSearchTerm(value);
+
   return (
     <Box className="startups-container">
       <Box className="startups-titleBar">
         <Typography variant="h3">
           {userId ? "My Startups 🔮" : "Startups 🏗️"}
         </Typography>
-        {userId && (
-          <>
-            <Button
-              startIcon={<AddIcon />}
-              onClick={handleCreateOpen}
-              variant="contained"
-            >
-              Create
-            </Button>
-            <CreateEditStartupModal
-              open={openCreateModal}
-              handleClose={() => setOpenCreateModal(false)}
-              handleSubmit={handleCreateSubmit}
-              isLoading={createStartupRes.isLoading}
-              error={createStartupRes.error}
-            />
-          </>
-        )}
+        <Box className="startups-titleBar-actionButtons">
+          <TextField
+            label="Search startups 🔍"
+            variant="outlined"
+            size="small"
+            onChange={(e) => handleSearch(e.target.value)}
+            className="search-box"
+          />
+          {userId && (
+            <>
+              <Button
+                startIcon={<AddIcon />}
+                onClick={handleCreateOpen}
+                variant="contained"
+              >
+                Create
+              </Button>
+              <CreateEditStartupModal
+                open={openCreateModal}
+                handleClose={() => setOpenCreateModal(false)}
+                handleSubmit={handleCreateSubmit}
+                isLoading={createStartupRes?.isLoading}
+                error={createStartupRes?.error}
+              />
+            </>
+          )}
+        </Box>
       </Box>
-      <Loader
-        show={userId ? startupsCreatedByRes?.isLoading : startupsRes?.isLoading}
-        padding="4em"
-      />
-      <Error
-        show={userId ? startupsCreatedByRes?.isError : startupsRes?.isError}
-        message={
+      <HandleResponse
+        response={userId ? startupsCreatedByRes : startupsRes}
+        noDataMessage={
           userId
-            ? startupsCreatedByRes?.error?.data?.message
-            : startupsRes?.error?.data?.message
+            ? "No Startups Created. Start by clicking the create button."
+            : "No startups found"
         }
-        marginBottom="1em"
+        marginTop="4em"
       />
-      <NoData
-        show={
-          userId
-            ? !startupsCreatedByRes?.data?.startups?.length
-            : !startupsRes?.data?.startups?.length
-        }
-        message="No startups found."
-        padding="4em"
-      />
-      {(startupsRes?.data?.startups ||
-        startupsCreatedByRes?.data?.startups) && (
-        <Grid container spacing={3}>
-          {userId
-            ? startupsCreatedByRes?.data?.startups.map((startup) => (
-                <React.Fragment key={startup._id}>
-                  <StartupCard
-                    startup={startup}
-                    modifyActions={{ handleEdit, handleDelete }}
+      <Grid container spacing={3}>
+        {userId
+          ? startupsCreatedByRes?.data?.map((startup) => (
+              <React.Fragment key={startup._id}>
+                <StartupCard
+                  startup={startup}
+                  modifyActions={{ handleEdit, handleDelete }}
+                />
+                {startupToEdit?._id === startup?._id && (
+                  <CreateEditStartupModal
+                    open={true}
+                    handleClose={() => setStartupToEdit(null)}
+                    handleSubmit={handleEditSubmit}
+                    defaultValues={startup}
+                    isLoading={updateStartupRes.isLoading}
+                    error={updateStartupRes.error}
                   />
-                  {startupToEdit?._id === startup?._id && (
-                    <CreateEditStartupModal
-                      open={true}
-                      handleClose={() => setStartupToEdit(null)}
-                      handleSubmit={handleEditSubmit}
-                      defaultValues={startup}
-                      isLoading={updateStartupRes.isLoading}
-                      error={updateStartupRes.error}
-                    />
-                  )}
-                  {startupToDelete?._id === startup?._id && (
-                    <ConfirmationModal
-                      open={true}
-                      handleClose={() => setStartupToDelete(null)}
-                      handleSubmit={() => {
-                        deleteStartup(startupToDelete?._id);
-                        getAllStartupsCreatedBy(userId);
-                        setStartupToDelete(null);
-                      }}
-                      message={`Are you sure you want to delete ${startupToDelete?.name}?`}
-                    />
-                  )}
-                </React.Fragment>
-              ))
-            : startupsRes?.data?.startups.map((startup) => (
-                <StartupCard key={startup._id} startup={startup} />
-              ))}
-        </Grid>
-      )}
+                )}
+                {startupToDelete?._id === startup?._id && (
+                  <ConfirmationModal
+                    open={true}
+                    handleClose={() => setStartupToDelete(null)}
+                    handleSubmit={() => {
+                      deleteStartup(startupToDelete?._id);
+                      getAllStartupsCreatedBy(userId);
+                      setStartupToDelete(null);
+                    }}
+                    message={`Are you sure you want to delete ${startupToDelete?.name}?`}
+                  />
+                )}
+              </React.Fragment>
+            ))
+          : startupsRes?.data?.map((startup) => (
+              <StartupCard key={startup._id} startup={startup} />
+            ))}
+      </Grid>
     </Box>
   );
 };

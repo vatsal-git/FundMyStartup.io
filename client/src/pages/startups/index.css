@@ -9,3 +9,21 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.startups-titleBar-actionButtons {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+@media screen and (max-width: 768px) {
+    .startups-titleBar {
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .startups-titleBar h3 {
+        font-size: 2em;
+    }
+}

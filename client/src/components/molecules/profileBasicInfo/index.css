@@ -1,0 +1,33 @@
+.profileBasicInfo-container {
+    min-height: 100vh;
+}
+
+.profileBasicInfo-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2em 0;
+}
+
+.profileBasicInfo-header-actionButtons {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.profileBasicInfo-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.profileBasicInfo-actionButtons {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 1em 0;
+}
+
+.profileBasicInfo-form-container .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+    -webkit-text-fill-color: #000 !important;
+}
