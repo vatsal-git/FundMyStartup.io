@@ -26,8 +26,8 @@ export const DEFAULT_SIGNUP_DATA = {
 };
 
 export const DEFAULT_SIGNIN_DATA = {
-  email: "testemail@test.com",
-  password: "test123",
+  email: "",
+  password: "",
 };
 
 export const DEFAULT_PROFILE_FORM_FIELDS = {

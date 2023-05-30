@@ -30,10 +30,7 @@ const ConversationSidebar = ({
                 currentConversation?.user?._id === conversation?.user?._id
               }
               onElementClick={() => onElementClick(conversation)}
-              latestMessage={
-                conversation?.messages[conversation.messages.length - 1]
-                  ?.message
-              }
+              latestMessage={conversation?.messages[0]?.message}
             />
             <Divider />
           </React.Fragment>

@@ -31,3 +31,15 @@
 .profileBasicInfo-form-container .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
     -webkit-text-fill-color: #000 !important;
 }
+
+@media screen and (max-width: 768px) {
+    .profileBasicInfo-header-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .profileBasicInfo-header-container h3 {
+        font-size: 2em;
+    }
+}

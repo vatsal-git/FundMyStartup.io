@@ -46,7 +46,5 @@ export const routeList = [
   {
     path: "/profile/:userId",
     element: <Profile key="all" />,
-    authReq: true,
   },
 ];
-

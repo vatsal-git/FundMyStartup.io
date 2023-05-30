@@ -133,39 +133,45 @@ const Startups = () => {
       />
       <Grid container spacing={3}>
         {userId
-          ? startupsCreatedByRes?.data?.map((startup) => (
-              <React.Fragment key={startup._id}>
-                <StartupCard
-                  startup={startup}
-                  modifyActions={{ handleEdit, handleDelete }}
-                />
-                {startupToEdit?._id === startup?._id && (
-                  <CreateEditStartupModal
-                    open={true}
-                    handleClose={() => setStartupToEdit(null)}
-                    handleSubmit={handleEditSubmit}
-                    defaultValues={startup}
-                    isLoading={updateStartupRes.isLoading}
-                    error={updateStartupRes.error}
+          ? startupsCreatedByRes?.data
+              ?.slice()
+              .reverse()
+              .map((startup) => (
+                <React.Fragment key={startup._id}>
+                  <StartupCard
+                    startup={startup}
+                    modifyActions={{ handleEdit, handleDelete }}
                   />
-                )}
-                {startupToDelete?._id === startup?._id && (
-                  <ConfirmationModal
-                    open={true}
-                    handleClose={() => setStartupToDelete(null)}
-                    handleSubmit={() => {
-                      deleteStartup(startupToDelete?._id);
-                      getAllStartupsCreatedBy(userId);
-                      setStartupToDelete(null);
-                    }}
-                    message={`Are you sure you want to delete ${startupToDelete?.name}?`}
-                  />
-                )}
-              </React.Fragment>
-            ))
-          : startupsRes?.data?.map((startup) => (
-              <StartupCard key={startup._id} startup={startup} />
-            ))}
+                  {startupToEdit?._id === startup?._id && (
+                    <CreateEditStartupModal
+                      open={true}
+                      handleClose={() => setStartupToEdit(null)}
+                      handleSubmit={handleEditSubmit}
+                      defaultValues={startup}
+                      isLoading={updateStartupRes.isLoading}
+                      error={updateStartupRes.error}
+                    />
+                  )}
+                  {startupToDelete?._id === startup?._id && (
+                    <ConfirmationModal
+                      open={true}
+                      handleClose={() => setStartupToDelete(null)}
+                      handleSubmit={() => {
+                        deleteStartup(startupToDelete?._id);
+                        getAllStartupsCreatedBy(userId);
+                        setStartupToDelete(null);
+                      }}
+                      message={`Are you sure you want to delete ${startupToDelete?.name}?`}
+                    />
+                  )}
+                </React.Fragment>
+              ))
+          : startupsRes?.data
+              ?.slice()
+              .reverse()
+              .map((startup) => (
+                <StartupCard key={startup._id} startup={startup} />
+              ))}
       </Grid>
     </Box>
   );

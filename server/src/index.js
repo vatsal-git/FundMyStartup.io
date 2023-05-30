@@ -54,7 +54,7 @@ app.post("/api/signup", signup);
 app.post("/api/signin", signin);
 
 app.get("/api/user", authenticateToken, getUser);
-app.get("/api/user/:id", authenticateToken, getUserById);
+app.get("/api/user/:id", getUserById);
 app.put("/api/user", authenticateToken, updateUser);
 app.delete("/api/user", authenticateToken, deleteUser);
 
